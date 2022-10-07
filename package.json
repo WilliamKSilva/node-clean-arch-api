@@ -12,6 +12,10 @@
     "typescript": "^4.8.4"
   },
   "scripts": {
-    "test": "jest --watch"
+    "test": "jest --silent --noStackTrace --runInBand",
+    "test:verbose": "jest --watch --runInBand",
+    "test:unit": "yarn test -- --watch -c jest-unit-config.js",
+    "test:integration": "yarn test -- --watch -c jest-integration-config.js",
+    "test:ci": "yarn test -- --coverage"
   }
 }
