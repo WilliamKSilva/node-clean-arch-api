@@ -1,4 +1,4 @@
 export default {
-  mongoUrl: process.env.MONGO_URL || 'mongodb://mongo_db:27017/node-clean-arch',
+  mongoUrl: 'mongodb://docker:admin@mongodb:27017/node-clean-arch?directConnection=true',
   port: process.env.PORT || 5050
 }

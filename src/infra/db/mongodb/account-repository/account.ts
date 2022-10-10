@@ -14,8 +14,6 @@ export class AccountMongoRepository implements AddAccountRepository {
     };    
     const result = await accountCollection.insertOne(accountData);
     account.id = result.insertedId.toJSON();
-
-    console.log(account);
      
     return account;
   }
