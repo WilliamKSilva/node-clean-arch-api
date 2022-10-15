@@ -1,6 +1,6 @@
 import { Authentication } from "../../../domain/usecases/authentication";
 import { MissingParamError } from "../../errors";
-import { badRequest, ok } from "../../helpers/http-helper";
+import { badRequest, ok, unauthorized } from "../../helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 
 
@@ -23,6 +23,10 @@ export class LoginController implements Controller {
     const { email, password } = httpRequest.body;
 
     const token = await this.authentication.auth({email, password});
+
+    if (!token) {
+      return unauthorized();
+    }
     
     return ok(token);
   }
