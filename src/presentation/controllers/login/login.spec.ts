@@ -1,6 +1,6 @@
 import { Authentication, AuthenticationData } from "../../../domain/usecases/authentication";
 import { MissingParamError } from "../../errors";
-import { badRequest } from "../../helpers/http-helper";
+import { badRequest, ok } from "../../helpers/http-helper";
 import { AccountModel } from "../signup/signup-protocols";
 import { LoginController } from "./login"
 
@@ -64,5 +64,19 @@ describe('Login Controller', () => {
     await loginControllerStub.handle(httpRequest);
 
     expect(authenticationStubSpy).toHaveBeenCalledWith(httpRequest.body);
+  })
+
+  it ('Should return a token and 200 if account exists', async () => {
+    const { loginControllerStub, authenticationStub } = makeSut();
+    const httpRequest = {
+      body: {
+        email: 'test@test.com',
+        password: 'test12345'                
+      }
+    }
+    
+    const httpResponse = await loginControllerStub.handle(httpRequest);
+
+    expect(httpResponse).toEqual(ok('test_token'));
   })
 })
