@@ -1,5 +1,5 @@
 import { Authentication, AuthenticationData } from "../../../domain/usecases/authentication";
-import { MissingParamError } from "../../errors";
+import { MissingParamError, ServerError } from "../../errors";
 import { badRequest, ok, unauthorized } from "../../helpers/http-helper";
 import { AccountModel } from "../signup/signup-protocols";
 import { LoginController } from "./login"
@@ -78,6 +78,23 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse).toEqual(ok('test_token'));
+  })
+
+  it('Should return 500 if Authorization throws', async () => {    
+    const { sut, authenticationStub } = makeSut();
+    jest.spyOn(authenticationStub, 'auth').mockImplementationOnce(async () => {
+      return new Promise((resolve, reject) => reject(new Error()));
+    })
+    const httpRequest = {
+      body: {        
+        email: 'test@test.com',
+        password: 'test12345',        
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+
   })
 
   it('Should return 401 if invalid credentials are provided', async () => {
