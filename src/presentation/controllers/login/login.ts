@@ -1,6 +1,6 @@
 import { Authentication } from "../../../domain/usecases/authentication";
 import { MissingParamError } from "../../errors";
-import { badRequest, ok, unauthorized } from "../../helpers/http-helper";
+import { badRequest, ok, serverError, unauthorized } from "../../helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 
 
@@ -12,7 +12,8 @@ export class LoginController implements Controller {
   }
   
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest.body.email) {
+    try {
+      if (!httpRequest.body.email) {
       return badRequest(new MissingParamError('email'));
     }
 
@@ -29,5 +30,8 @@ export class LoginController implements Controller {
     }
     
     return ok(token);
+    } catch(error) {
+      return serverError();
+    }
   }
 }
