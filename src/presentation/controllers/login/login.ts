@@ -1,9 +1,16 @@
+import { Authentication } from "../../../domain/usecases/authentication";
 import { MissingParamError } from "../../errors";
 import { badRequest } from "../../helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 
 
 export class LoginController implements Controller {
+  private readonly authentication: Authentication;
+
+  constructor(authentication: Authentication) {
+    this.authentication = authentication;
+  }
+  
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     if (!httpRequest.body.email) {
       return badRequest(new MissingParamError('email'));
@@ -12,12 +19,15 @@ export class LoginController implements Controller {
     if (!httpRequest.body.password) {
       return badRequest(new MissingParamError('password'));
     }
+
+    const { email, password } = httpRequest.body;
+
+    const token = await this.authentication.auth({email, password});
     
     return {
       statusCode: 200,
       body: {
-        email: 'test@test.com',
-        password: 'test12345'
+        token
       }
     }
   }
