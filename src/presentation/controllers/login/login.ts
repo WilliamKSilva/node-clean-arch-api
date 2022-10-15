@@ -1,6 +1,6 @@
 import { Authentication } from "../../../domain/usecases/authentication";
 import { MissingParamError } from "../../errors";
-import { badRequest } from "../../helpers/http-helper";
+import { badRequest, ok } from "../../helpers/http-helper";
 import { Controller, HttpRequest, HttpResponse } from "../../protocols";
 
 
@@ -24,11 +24,6 @@ export class LoginController implements Controller {
 
     const token = await this.authentication.auth({email, password});
     
-    return {
-      statusCode: 200,
-      body: {
-        token
-      }
-    }
+    return ok(token);
   }
 }
